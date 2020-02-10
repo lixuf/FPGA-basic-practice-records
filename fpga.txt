@@ -1,0 +1,220 @@
+module encoder(input [8:1] a,output reg [3:1]y);
+always@(a)
+begin
+case(a)
+8'b0000_0001:y=3'b000;
+8'b0000_0010:y=3'b001;
+8'b0000_0100:y=3'b010;
+8'b0000_1000:y=3'b011;
+8'b0001_0000:y=3'b100;
+8'b0010_0000:y=3'b101;
+8'b0100_0000:y=3'b110;
+8'b1000_0000:y=3'b111;
+default:y=3'bxxx;
+endcase
+end
+endmodule
+
+module compare (led0,led1,led2,a,b);
+input a,b;
+output reg led0,led1,led2;
+always@(a or b)
+begin
+if(a==b)
+begin
+led0=1'b0;
+led1=1'b1;
+led2=1'b0;
+end
+else if(a>b)
+begin
+led0=1'b1;
+led1=1'b0;
+led2=1'b0;
+end
+else if(a<b)
+begin
+led0=1'b0;
+led1=1'b0;
+led2=1'b1;
+end
+end
+endmodule
+
+led---------------
+module qw(a,b,c,d);
+output wire a,b,c,d;
+assign {a,b,c,d}=4'b1100;
+endmodule
+
+
+module choice(out,in1,in2,in3,in4,A0,A1);
+output out;
+input wire in1,in2,in3,in4;
+input wire A1,A0;
+wire out;
+assign out=(~A1)*(~A0)*(in1)+(~A1)*A0*in2+(~A0)*A1*in3+A1*A0*in4;
+endmodule
+
+
+module alladd(si,ci,xi,yi,ci1);
+input wire xi,yi,ci1;
+output wire ci,si;
+
+
+assign {ci,si}=xi+yi+ci1;
+
+endmodule
+
+
+
+module jk(s,d,cp,r,q,q1);
+input s,d,cp,r;
+output q,q1;
+wire n0,n1,n2,n3,n4,n5;
+assign n0=~((n1&s)&n3);
+assign n1=~((r&n0)&cp);
+assign n2=~((n1&s)&n5);
+assign n3=~((d&r)&n4);
+assign n4=~((n1&n3)&cp);
+assign n5=~((n2&n4)&r);
+assign q=n2;
+assign q1=n5;
+endmodule
+
+module biao(a,b,c,l);
+input a,b,c;
+output reg l;
+reg [2:0]sum;
+always@(a or b or c)
+begin
+sum=a+b+c;
+if(sum>=2'b10)
+begin
+l=1'b1;
+sum=0;
+end
+else
+begin
+l=0;
+sum=0;
+end
+end
+endmodule
+
+
+module sltw(clock,sw1,sw2,reset,cout) ;
+output [3:0]cout;
+input clock,sw1,sw2,reset;
+reg [3:0]cout;
+reg clock_out;
+reg [32:0]j;
+
+always@(posedge clock)
+if(~reset)
+	begin
+		clock_out<=0;
+		j<=0;
+	end
+else
+	begin
+		if(j==4294960)
+			begin
+				j<=0;
+				clock_out<=~clock_out;
+			end
+		else
+			j<=j+1;
+	end
+	
+always@(posedge clock_out ) 
+begin
+cout[3]<=cout[2];
+cout[2]<=cout[1];
+cout[1]<=cout[0];
+cout[0]<=sw2;
+if(~reset)
+cout<=4'b1100;
+else if(sw1==1'b0)
+cout<=4'b0000;
+end
+
+endmodule
+
+
+module counter(clock,reset,cnt);
+output [3:0]cnt;
+input clock,reset;
+reg clock_out;
+reg[3:0]cnt;
+reg [32:0]j;
+always@(posedge clock)
+if(~reset)
+	begin
+		clock_out<=0;
+		j<=0;
+	end
+else
+	begin
+		if(j==4294960)
+			begin
+				j<=0;
+				clock_out<=~clock_out;
+			end
+		else
+			j<=j+1;
+	end
+	
+
+always@(posedge clock_out)
+begin
+if(~reset)
+cnt<=0;
+else if(cnt==4'b1111)
+cnt<=4'd0;
+else
+cnt<=cnt+1;
+end
+endmodule
+
+
+module shuma(input clock,reset,output reg [7:0] led,output reg [2:0]s0);
+reg [2:0] a;
+reg clock_out;
+reg [32:0]j;
+
+always@(posedge clock)
+if(~reset)
+	begin
+		clock_out<=0;
+		j<=0;
+	end
+else
+	begin
+		if(j==42949600)
+			begin
+				j<=0;
+				clock_out<=~clock_out;
+			end
+		else
+			j<=j+1;
+	end
+always@(posedge clock_out)
+begin
+	s0=3'b011;
+	case(a)
+	3'b000:begin led<=8'b10111111;a=a+1;end
+	3'b001:begin led<=8'b10000110;a=a+1;end
+	3'b010:begin led<=8'b11011011;a=a+1;end
+	3'b011:begin led<=8'b11001111;a=a+1;end
+	3'b100:begin led<=8'b11100110;a=a+1;end
+	3'b101:begin led<=8'b11101101;a=a+1;end
+	3'b110:begin led<=8'b11111101;a=a+1;end
+	3'b111:begin led<=8'b10000111;a=0;end
+	default:begin led<=0;a=0;end
+	endcase
+end
+endmodule
+
+
+

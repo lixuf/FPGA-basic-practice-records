@@ -1,0 +1,132 @@
+module zhen( clock,reset,a, sii,a3, rck, sck,oe);
+output reg [2:0] a ;
+output reg sii;
+output reg a3;
+output reg rck;
+output reg sck;
+output reg oe;
+reg [15:0] si;
+reg [2:0] cout;
+input clock,reset;
+
+
+reg clock_in;
+reg [32:0]j2;
+always @ (posedge clock)
+begin
+if(~reset)
+ begin
+  clock_in<=0;
+  j2<=0;
+ end
+else
+ begin
+  if(j2==1000)
+   begin
+    clock_in<=~clock_in;
+    j2<=0;
+   end
+  else 
+   j2<=j2+1;
+ end
+end
+
+
+
+reg clock_out;
+reg [32:0] j;
+
+always @ (posedge clock_in)
+begin
+if(~reset)
+ begin
+  clock_out<=0;
+  rck<=0;
+  j<=0;
+ end
+else
+ begin
+  if(j==17)
+   begin
+    clock_out<=~clock_out;
+	 rck<=~rck;
+    j<=0;
+   end
+  else 
+   j<=j+1;
+ end
+end
+
+
+reg [32:0] j1;
+always @ (posedge clock_in)
+begin
+if(~reset)
+ begin
+  sck<=0;
+ end
+else if(j<=15)
+	begin 
+	  sck<=~sck;
+	end
+
+	
+end
+
+ 
+ 
+reg [3:0]k;
+reg[4:0]mid=5'b00000;
+reg [3:0]sl=4'b0000;
+always @ (posedge sck)
+begin
+case(mid)
+5'b00000:begin sii<=si[sl];mid<=mid+1; sl<=sl+1;end
+5'b00001:begin sii<=si[sl];mid<=mid+1; sl<=sl+1;end
+5'b00010:begin sii<=si[sl];mid<=mid+1; sl<=sl+1;end
+5'b00011:begin sii<=si[sl];mid<=mid+1; sl<=sl+1;end
+5'b00100:begin sii<=si[sl];mid<=mid+1; sl<=sl+1;end
+5'b00101:begin sii<=si[sl];mid<=mid+1; sl<=sl+1;end
+5'b00110:begin sii<=si[sl];mid<=mid+1; sl<=sl+1;end
+5'b00111:begin sii<=si[sl];mid<=mid+1; sl<=sl+1;end
+5'b01000:begin sii<=si[sl];mid<=mid+1; sl<=sl+1;end
+5'b01001:begin sii<=si[sl];mid<=mid+1; sl<=sl+1;end
+5'b01010:begin sii<=si[sl];mid<=mid+1; sl<=sl+1;end
+5'b01011:begin sii<=si[sl];mid<=mid+1; sl<=sl+1;end
+5'b01100:begin sii<=si[sl];mid<=mid+1; sl<=sl+1;end
+5'b01101:begin sii<=si[sl];mid<=mid+1; sl<=sl+1;end
+5'b01110:begin sii<=si[sl];mid<=mid+1; sl<=sl+1;end
+5'b01111:begin sii<=si[sl];mid<=5'b00000; sl<=0; end
+default: begin mid<=5'b00000;sl<=0;end
+endcase
+end
+
+
+
+
+always@(posedge clock_out)
+begin
+oe<=1'b0;
+case(k)
+ 4'b0000:begin a<=3'b000;si=17'b0000000010000000;k<=k+1;a3<=1'b0;end
+ 4'b0001:begin a<=3'b001;si=17'b0000000001000000;k<=k+1;a3<=1'b0;end
+ 4'b0010:begin a<=3'b010;si=17'b0000000000100000;k<=k+1;a3<=1'b0;end
+ 4'b0011:begin a<=3'b011;si=17'b1111111100010111;k<=k+1;a3<=1'b0;end
+ 4'b0100:begin a<=3'b100;si=17'b0000000100000010;k<=k+1;a3<=1'b0;end
+ 4'b0101:begin a<=3'b101;si=17'b0000001000000001;k<=k+1;a3<=1'b0;end
+ 4'b0110:begin a<=3'b110;si=17'b1000010000000000;k<=k+1;a3<=1'b0;end
+ 4'b0111:begin a<=3'b111;si=17'b0100100001111111;k<=k+1;a3<=1'b0;end
+ 4'b1000:begin a<=3'b000;si=17'b0011000000000000;k<=k+1;a3<=1'b1;end
+ 4'b1001:begin a<=3'b001;si=17'b0011000000000010;k<=k+1;a3<=1'b1;end
+ 4'b1010:begin a<=3'b010;si=17'b0100100000000100;k<=k+1;a3<=1'b1;end
+ 4'b1011:begin a<=3'b011;si=17'b1000010000001000;k<=k+1;a3<=1'b1;end
+ 4'b1100:begin a<=3'b100;si=17'b0000001000010001;k<=k+1;a3<=1'b1;end
+ 4'b1101:begin a<=3'b101;si=17'b0000000100010001;k<=k+1;a3<=1'b1;end
+ 4'b1110:begin a<=3'b110;si=17'b0000000101000100;k<=k+1;a3<=1'b1;end
+ 4'b1111:begin a<=3'b111;si=17'b0000000010000000;k<=0;a3<=1'b1;end
+ default:k<=0;
+endcase
+end
+endmodule
+
+
